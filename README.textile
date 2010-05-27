@@ -20,7 +20,7 @@ Quick how to install the plugin into pylucid:
 pre. ~$ mkdir pylucid_plugins
 ~$ cd pylucid_plugins
 ~/pylucid_plugins$ git clone git://github.com/jedie/PyLucid-Weave-plugin.git
-~/pylucid_plugins$ ln -s ~/pylucid_plugins/PyLucid-Weave-plugin/Weave ~/PyLucid_env/src/pylucid/pylucid_project/external_plugins/
+~/pylucid_plugins$ ln -s ~/pylucid_plugins/PyLucid-Weave-plugin/pylucid_weave ~/PyLucid_env/src/pylucid/pylucid_project/external_plugins/
 
 If you don't have git, but suversion, you can checkout with this command:
 
