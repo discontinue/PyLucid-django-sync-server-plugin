@@ -18,8 +18,20 @@
   <tr>
     <td>{{ user_summary.username }}</td>
     <td>{{ user_summary.count }}</td>
-    <td>{% if user_summary.oldest_modified %}{{ user_summary.oldest_modified|date:_("DATETIME_FORMAT") }}{% else %}-{% endif %}</td>
-    <td>{% if user_summary.latest_modified %}{{ user_summary.latest_modified|timesince }}{% else %}-{% endif %}</td>
+    <td>
+        {% if user_summary.oldest_modified %}
+        <span title="{{ user_summary.oldest_modified|date:_("DATETIME_FORMAT") }}">
+        {{ user_summary.oldest_modified|timesince }}
+        </span>
+        {% else %}-{% endif %}
+    </td>
+    <td>
+        {% if user_summary.latest_modified %}
+        <span title="{{ user_summary.latest_modified|date:_("DATETIME_FORMAT") }}">
+        {{ user_summary.latest_modified|timesince }}
+        </span>
+        {% else %}-{% endif %}
+    </td>
     
     <td><a href="{% url sync-size_info username=user_summary.username %}" class="openinwindow">{% trans "calculate" %}</a></td>
     
