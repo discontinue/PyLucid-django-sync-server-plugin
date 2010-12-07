@@ -29,8 +29,13 @@ def info_page(request):
         queryset = Wbo.objects.filter(user=user_id)
 
         count = queryset.count()
-        latest = queryset.only("modified").latest("modified")
-        oldest = queryset.only("modified").order_by("modified")[0]
+        if count == 0:
+            latest = None
+            oldest = None
+        else:
+            latest = queryset.only("modified").latest("modified")
+            oldest = queryset.only("modified").order_by("modified")[0]
+
         summary_info.append({
             "username": username,
             "count": count,
