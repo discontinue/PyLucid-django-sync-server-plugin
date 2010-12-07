@@ -4,6 +4,8 @@
     glue plugin between pylucid <-> django-weave
 """
 
+import time
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -17,6 +19,33 @@ def absolute_uri(request, view_name, **kwargs):
     url = reverse(view_name, kwargs=kwargs)
     absolute_uri = request.build_absolute_uri(url)
     return absolute_uri
+
+
+@login_required
+@render_to("pylucid_weave/size_info.html")
+def size_info(request, username):
+    start_time = time.time()
+
+    user_id = User.objects.get(username=username)
+    queryset = Wbo.objects.filter(user=user_id).only("payload")
+
+    wbo_count = 0
+    payload_size = 0
+    for item in queryset.iterator():
+        wbo_count += 1
+        payload_size += len(item.payload)
+
+    duration = time.time() - start_time
+
+    context = {
+        "title": "Payload size",
+        "username": username,
+        "wbo_count": wbo_count,
+        "payload_size": payload_size,
+        "duration": duration,
+    }
+    return context
+
 
 
 @login_required

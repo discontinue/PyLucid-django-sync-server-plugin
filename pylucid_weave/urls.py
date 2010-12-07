@@ -2,9 +2,10 @@
 
 from django.conf.urls.defaults import patterns, url, include
 
-from pylucid_weave.views import info_page
+from pylucid_weave.views import size_info, info_page
 
 urlpatterns = patterns('',
     url(r'', include('weave.urls')),
-    url(r'^', info_page, name="weave-info_page"),
+    url(r'^size_info/(?P<username>.+)/$', size_info, name="sync-size_info"),
+    url(r'^', info_page, name="sync-info_page"),
 )

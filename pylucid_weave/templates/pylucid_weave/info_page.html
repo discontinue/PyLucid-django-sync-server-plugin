@@ -12,6 +12,7 @@
     <th>{% trans "wbo count" %}</th>
     <th>{% trans "oldest modified" %}</th>
     <th>{% trans "latest modified since" %}</th>
+    <th>{% trans "count user payload size" %}</th>    
   </tr>
   {% for user_summary in summary_info %}
   <tr>
@@ -19,6 +20,9 @@
     <td>{{ user_summary.count }}</td>
     <td>{% if user_summary.oldest_modified %}{{ user_summary.oldest_modified|date:_("DATETIME_FORMAT") }}{% else %}-{% endif %}</td>
     <td>{% if user_summary.latest_modified %}{{ user_summary.latest_modified|timesince }}{% else %}-{% endif %}</td>
+    
+    <td><a href="{% url sync-size_info username=user_summary.username %}" class="openinwindow">{% trans "calculate" %}</a></td>
+    
   </tr>
   {% endfor %}
 </table>
