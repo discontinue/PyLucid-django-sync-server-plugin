@@ -28,8 +28,10 @@ def info_page(request):
     for user_id, username in users:
         queryset = Wbo.objects.filter(user=user_id)
 
-        count = queryset.count()
-        if count == 0:
+        try:
+            count = int(queryset.count())
+        except Wbo.DoesNotExist:
+            count = 0
             latest = None
             oldest = None
         else:
