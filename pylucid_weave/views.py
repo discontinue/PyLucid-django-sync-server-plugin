@@ -28,21 +28,22 @@ def info_page(request):
     for user_id, username in users:
         queryset = Wbo.objects.filter(user=user_id)
 
+        count = queryset.count()
+
         try:
-            count = int(queryset.count())
+            latest = queryset.only("modified").latest("modified").modified
         except Wbo.DoesNotExist:
-            count = 0
+            # User hasn't used sync, so no WBOs exist from him
             latest = None
             oldest = None
         else:
-            latest = queryset.only("modified").latest("modified")
-            oldest = queryset.only("modified").order_by("modified")[0]
+            oldest = queryset.only("modified").order_by("modified")[0].modified
 
         summary_info.append({
             "username": username,
             "count": count,
-            "latest_modified": latest.modified,
-            "oldest_modified": oldest.modified,
+            "latest_modified": latest,
+            "oldest_modified": oldest,
         })
 
     context = {

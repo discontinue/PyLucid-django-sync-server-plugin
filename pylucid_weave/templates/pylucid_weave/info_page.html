@@ -9,16 +9,16 @@
 <table>
   <tr>
     <th>{% trans "username" %}</th>
+    <th>{% trans "wbo count" %}</th>
     <th>{% trans "oldest modified" %}</th>
     <th>{% trans "latest modified since" %}</th>
-    <th>{% trans "wbo count" %}</th>
   </tr>
   {% for user_summary in summary_info %}
   <tr>
     <td>{{ user_summary.username }}</td>
+    <td>{{ user_summary.count }}</td>
     <td>{% if user_summary.oldest_modified %}{{ user_summary.oldest_modified|date:_("DATETIME_FORMAT") }}{% else %}-{% endif %}</td>
     <td>{% if user_summary.latest_modified %}{{ user_summary.latest_modified|timesince }}{% else %}-{% endif %}</td>
-    <td>{{ user_summary.count }}</td>
   </tr>
   {% endfor %}
 </table>
