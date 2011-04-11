@@ -13,6 +13,8 @@ from django.core.urlresolvers import reverse
 from pylucid_project.apps.pylucid.decorators import render_to
 
 from pylucid_project.external_plugins.weave.models import Wbo
+from pylucid_project.external_plugins import weave
+
 
 
 def absolute_uri(request, view_name, **kwargs):
@@ -76,9 +78,10 @@ def info_page(request):
         })
 
     context = {
-        "title": "weave testproject url info",
+        "title": "django-sync-server info page",
         "summary_info": summary_info,
         "server_url": request.build_absolute_uri(),
+        "weave_version": weave.VERSION_STRING,
         "register_check_url": absolute_uri(request, "weave-register_check", username=request.user.username),
         "info_url": absolute_uri(request, "weave-info", version="1.0", username=request.user.username),
     }
