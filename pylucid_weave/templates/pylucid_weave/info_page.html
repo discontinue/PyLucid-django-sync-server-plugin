@@ -1,0 +1,70 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<p>
+	Use <strong>{{ server_url }}</strong> as server url in your weave client preferences.
+</p>
+
+<h3>sync summary</h3>
+<p><a href="http://code.google.com/p/django-sync-server/" title="goto project homepage">django-sync-server v{{ weave_version }}</a></p>
+<table>
+  <tr>
+    <th>{% trans "username" %}</th>
+    <th>{% trans "wbo count" %}</th>
+    <th>{% trans "oldest modified" %}</th>
+    <th>{% trans "latest modified since" %}</th>
+    <th>{% trans "count user payload size" %}</th>    
+  </tr>
+  {% for user_summary in summary_info %}
+  <tr>
+    <td>{{ user_summary.username }}</td>
+    <td>{{ user_summary.count }}</td>
+    <td>
+        {% if user_summary.oldest_modified %}
+        <span title="{{ user_summary.oldest_modified|date:_("DATETIME_FORMAT") }}">
+        {{ user_summary.oldest_modified|timesince }}
+        </span>
+        {% else %}-{% endif %}
+    </td>
+    <td>
+        {% if user_summary.latest_modified %}
+        <span title="{{ user_summary.latest_modified|date:_("DATETIME_FORMAT") }}">
+        {{ user_summary.latest_modified|timesince }}
+        </span>
+        {% else %}-{% endif %}
+    </td>
+    
+    <td><a href="{% url sync-size_info username=user_summary.username %}" class="openinwindow">{% trans "calculate" %}</a></td>
+    
+  </tr>
+  {% endfor %}
+</table>
+
+
+{% if user.is_staff %}
+<h3>{% trans "Django admin links" %}</h3>
+<ul>
+    {% if perms.weave.change_collection and perms.weave.change_wbo %}
+    <li>
+        <a href="{% url admin:app_list 'weave' %}">{% trans "sync models:" %}</a>
+        <ul>
+            <li><a href="{% url admin:weave_collection_changelist %}">Collections</a></li>
+            <li><a href="{% url admin:weave_wbo_changelist %}">WBOs</a></li>
+        </ul>
+    </li>
+    {% endif %}    
+</ul>
+{% endif %}
+
+<h3>Some test urls:</h3>
+<ul>
+	<li>
+		<a href="{{ register_check_url }}">{{ register_check_url }}</a><br />
+		must return <strong>0</strong>, because user exist.
+	</li>
+	<li>
+		<a href="{{ info_url }}">{{ info_url }}</a><br />
+		response json data.
+	</li>
+</ul>
+{% endblock content %}

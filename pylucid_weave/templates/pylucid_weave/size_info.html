@@ -1,0 +1,18 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<dl>
+  <dt>username</dt>
+  <dd>{{ username }}</dd>
+  <dt>WBO count</dt>
+  <dd>{{ wbo_count }}</dd>
+  <dt>Payload size together</dt>
+  <dd>{{ payload_size|filesizeformat }}</dd>
+</dl>
+<p>
+    (Calculated in {{ duration|human_duration }} )
+</p>
+<p>
+    Go back to <a href="{% url sync-info_page %}">{% trans "sync info page" %}</a>.
+</p>
+{% endblock content %}
