@@ -88,8 +88,13 @@ class SyncTests(BaseUnittest):
         self.failUnlessEqual(response["content-type"], "application/json")
 
     def test_csrf_exempt(self):
-        # Doen't work in PyLucid:
+        """
+        Test if csrf_exempt() work in PyLucid.
+        https://github.com/jedie/django-sync-server/issues/10
+        """
+        # reverse doesn't work in PyLucid:
         #url = reverse("weave-col_storage", kwargs={"username":"testuser", "version":"1.1", "col_name":"foobar"})
+
         url = "/en/sync/1.1/superuser/storage/foobar"
 
         data = (
@@ -99,7 +104,17 @@ class SyncTests(BaseUnittest):
 
         response = csrf_client.post(url, data=data, content_type="application/json", HTTP_AUTHORIZATION=self.auth_data)
 
-        self.failUnlessEqual(response.content, u'{"failed": [], "success": ["12345678-90AB-CDEF-1234-567890ABCDEF"]}')
+        self.assertResponse(response,
+            must_contain=(
+                '"failed": []',
+                '"success": ["12345678-90AB-CDEF-1234-567890ABCDEF"]',
+            ),
+            must_not_contain=(
+                "Traceback", "Form errors", "field is required",
+                "<!DOCTYPE", "<body", "</html>",
+            )
+        )
+#        self.failUnlessEqual(response.content, u'{"failed": [], "success": ["12345678-90AB-CDEF-1234-567890ABCDEF"]}')
         self.failUnlessEqual(response["content-type"], "application/json")
 
 
@@ -107,12 +122,19 @@ class SyncTests(BaseUnittest):
 
 
 if __name__ == "__main__":
+    from django_tools.utils import info_print;info_print.redirect_stdout()
+
     # Run all unittest directly
     from django.core import management
 
-    tests = "external_plugins.pylucid_weave.tests"
+#    import logging
+#    logger = logging.getLogger('pylucid')
+#    logger.setLevel(logging.DEBUG)
+#    logger.addHandler(logging.StreamHandler())
+
+#    tests = "external_plugins.pylucid_weave.tests"
 #    tests = "external_plugins.pylucid_weave.tests.SyncTests.test_info_page"
-#    tests = "external_plugins.pylucid_weave.tests.SyncTests.test_csrf_exempt"
+    tests = "external_plugins.pylucid_weave.tests.SyncTests.test_csrf_exempt"
 
     management.call_command('test', tests,
         verbosity=2,
