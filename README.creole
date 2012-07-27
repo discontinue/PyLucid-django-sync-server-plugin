@@ -1,0 +1,136 @@
+== PyLucid 'django-sync-server' glue Plugin ==
+
+A tiny PyLucid glue plugin to use [[https://github.com/jedie/django-sync-server/|django-sync-server]] (A reusable application which implements a Mozilla Labs Weave server for Django.) in PyLucid as a PluginPage.
+
+=== install instuctions ===
+
+To support django-sync-server you need two things: the django-sync-server app and the tiny PyLucid glue plugin:
+* django-sync-server:
+** Homepage: http://code.google.com/p/django-sync-server/
+** Sourcecode: http://github.com/jedie/django-sync-server
+* PyLucid glue plugin:
+** Homepage: http://github.com/jedie/PyLucid-django-sync-server-plugin
+
+== install django-sync-server
+
+{{{
+~$ mkdir pylucid_plugins
+~$ cd pylucid_plugins
+~/pylucid_plugins$ git clone git://github.com/jedie/django-sync-server.git
+~/pylucid_plugins$ ln -s ~/pylucid_plugins/django-sync-server/weave ~/PyLucid_env/src/pylucid/pylucid_project/external_plugins/
+}}}
+
+If you don’t have git, but subversion, you can checkout with this command:
+{{{
+~/pylucid_plugins$ svn checkout http://svn.github.com/jedie/django-sync-server.git
+}}}
+
+Info: You can also install django-sync-server with pip/easy_install into your virtualenv!
+
+
+== install glue plugin
+
+{{{
+~/pylucid_plugins$ git clone git://github.com/jedie/PyLucid-django-sync-server-plugin.git
+~/pylucid_plugins$ ln -s ~/pylucid_plugins/PyLucid-django-sync-server-plugin/pylucid_weave ~/PyLucid_env/src/pylucid/pylucid_project/external_plugins/
+}}}
+
+If you don’t have git, but subversion, you can checkout with this command:
+{{{
+~/pylucid_plugins$ svn checkout http://svn.github.com/jedie/PyLucid-django-sync-server-plugin.git
+}}}
+
+
+== settings
+
+You must insert the following into your local_settings.py file:
+{{{
+try:
+    from weave import app_settings as WEAVE
+except ImportError:
+    # Ignore, if the plugin doesn't exists. So only the pluing doesn't work, instead of the whole page
+    pass
+}}}
+
+
+== create django-sync-server tables
+
+You need to create the django-sync-server database tables. Run //syncdb//, e.g.:
+{{{
+/var/www/YourSite$ ./manage.py syncdb
+}}}
+
+
+== create plugin page
+
+Create a PyLucid plugin page with:
+ * //PyLucid Admin Menu / create content / **new plugin page** //
+
+Use the //App label// **external_plugins.pylucid_weave**
+
+It's a good idea to protect this page! e.g.: set a **PermitViewGroup** under PageTree permissions.
+
+
+=== test plugin page
+
+On the plugin page you see only the weave server url. If you create the PageTree **/weave/**, then you can test it with with url:
+* http://www.yourdomain.tld/en/weave/api/register/check/UserName
+
+If //UserName// doesn't exist, you should only see **1**, if user exist you should see **0**
+
+
+== setup weave client
+
+Goto weave client preferences, e.g.:
+* //Extras / Weave / **Preferences...**//
+
+Switch from //Mozilla Weave Server// to **Use a custom server**.
+
+The **Server URL** can you see on the PyLucid PluginPage. Copy&Paste it from there.
+
+For **User Name** use your PyLucid Account username.
+
+**Important:** For //Password// read next chapter:
+
+
+== setup django user
+
+
+=== about user permissions
+
+The django users needs two permission:
+* permission to create/edit/delete **Collections** and **Wbo** tables
+* permission to see the weave PluginPage (test: login as the weave user and request the weave PluginPage)
+
+
+=== PyLucid weave user Authentication
+
+You can use different authentication methods.
+
+If you have secure **http//s//**, then you can use your pylucid account password in the weave client. If you don't have **http//s//** you should use PyLucid SHA-JS-Login, read [[http://code.google.com/p/django-sync-server/wiki/HTTPSDevelopment|Https work-a-round]] and next chapter:
+
+
+=== Use PyLucid SHA-JS-Login
+
+To use PyLucid own [[/permalink/320/the-auth-plugin-js-sha1-login|JS-SHA1-Login]], just login manually on your PyLucid web page and start sync after this.
+
+**It's important to set not your real PyLucid Password into weave client preferences!** Otherwise your PyLucid password would be send via weave client in plain text!
+
+Put random stuff info weave client password field. Then your weave client can't login by himself (You will get a "username/password" message).
+Before the client can connect and sync, you must manually login on your PyLucid web page.
+
+
+=== test user
+
+You can test, if database models works, with this url:
+* http://www.yourdomain.tld/en/weave/1.0/UserName/info/collections
+
+If //UserName// doesn't exist or you didn't login as this user, you get a **Permission denied**. If //UserName// is loggin, you should get a json response.
+
+
+== Links ==
+
+| PyLucid glue plugin homepage   | http://www.pylucid.org/permalink/324/howto-support-the-django-weave-app
+| PyLucid glue plugin sourcecode | https://github.com/jedie/PyLucid-django-sync-server-plugin
+| django-sync-server homepage    | http://code.google.com/p/django-sync-server/
+| django-sync-server sourcecode  | https://github.com/jedie/django-sync-server/
