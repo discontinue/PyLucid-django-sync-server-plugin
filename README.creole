@@ -128,6 +128,30 @@ You can test, if database models works, with this url:
 If //UserName// doesn't exist or you didn't login as this user, you get a **Permission denied**. If //UserName// is loggin, you should get a json response.
 
 
+=== debugging
+
+Enable debugging to a logfile: e.g. add this {{{else}}} code part:
+{{{
+try:
+    # django-weave
+    from weave import app_settings as WEAVE
+except ImportError:
+    pass
+else:
+    # Log request/reponse debug information
+    WEAVE.DEBUG_REQUEST = True
+
+    import logging
+    from weave import Logging
+
+    logger = Logging.get_logger()
+    logger.setLevel(logging.DEBUG)
+    logger.handlers = [logging.FileHandler('SyncFX.log')] # setting would be import more than one time
+}}}
+
+To see sync client debug log read: http://code.google.com/p/django-sync-server/wiki/DebugHelp
+
+
 == Links ==
 
 | PyLucid glue plugin homepage   | http://www.pylucid.org/permalink/324/howto-support-the-django-weave-app
