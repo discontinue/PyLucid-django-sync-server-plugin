@@ -151,6 +151,11 @@ else:
 
 To see sync client debug log read: http://code.google.com/p/django-sync-server/wiki/DebugHelp
 
+=== Known problems
+
+django-sync-server doesn't work with [[https://github.com/jedie/django-tools/tree/master/django_tools/dynamic_site|django-tools dynamic site]].
+Work-a-round: You must use the default, fallback SITE_ID for the sync data!  
+
 
 == Links ==
 
